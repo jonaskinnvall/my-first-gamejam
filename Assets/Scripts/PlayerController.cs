@@ -24,8 +24,10 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update() {
         rb.velocity = new Vector2(inputX * moveSpeed, rb.velocity.y);
+    }
 
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+    private bool IsGrounded() {
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
     public void Move(InputAction.CallbackContext context) {
@@ -34,8 +36,12 @@ public class PlayerController : MonoBehaviour {
     }
 
     public void Jump(InputAction.CallbackContext context) {
-        if (isGrounded) {
+        if (context.performed && IsGrounded()) {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+        }
+
+        if (context.canceled) {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
     }
 
